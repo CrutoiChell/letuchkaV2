@@ -1,5 +1,5 @@
 export interface Tour {
-  id: number;
+  id: string;
   title: string;
   description: string;
   price: string;
@@ -7,6 +7,9 @@ export interface Tour {
   image: string;
   category: 'popular' | 'exotic' | 'europe';
   features: string[];
+  rating?: number;
+  is_active?: boolean;
+  created_at?: string;
   bookingDate?: string;
 }
 
@@ -16,13 +19,27 @@ export interface User {
   name: string;
   phone?: string;
   avatar?: string;
+  role?: 'user' | 'admin';
+  notifications?: boolean;
+  newsletter?: boolean;
   preferences?: {
     notifications: boolean;
     newsletter: boolean;
     theme: 'light' | 'dark';
   };
   favoriteDestinations?: string[];
-  bookedTours?: Tour[];
+  bookedTours?: (Tour & { bookingId: string; bookingDate: string; bookingStatus: string })[];
+}
+
+export interface Booking {
+  id: string;
+  user_id: string;
+  tour_id: string;
+  status: 'pending' | 'confirmed' | 'cancelled';
+  notes?: string;
+  created_at: string;
+  tour?: Tour;
+  user?: { id: string; name: string; email: string };
 }
 
 export interface AuthState {
@@ -40,4 +57,4 @@ export interface RegisterData {
   password: string;
   name: string;
   phone?: string;
-} 
+}

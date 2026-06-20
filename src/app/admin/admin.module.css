@@ -1,0 +1,448 @@
+/* Admin Panel Styles */
+
+.adminLayout {
+  display: flex;
+  min-height: 100vh;
+  background: #0f172a;
+}
+
+.sidebar {
+  width: 260px;
+  background: #1e293b;
+  border-right: 1px solid rgba(255,255,255,0.06);
+  display: flex;
+  flex-direction: column;
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  z-index: 100;
+}
+
+.sidebarHeader {
+  padding: 1.5rem 1.5rem 1rem;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+
+.sidebarLogo {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: #fff;
+  text-decoration: none;
+  display: block;
+}
+
+.sidebarSubtitle {
+  font-size: 0.75rem;
+  color: rgba(255,255,255,0.4);
+  margin-top: 0.25rem;
+}
+
+.sidebarNav {
+  padding: 1rem 0;
+  flex: 1;
+}
+
+.sidebarLink {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1.5rem;
+  color: rgba(255,255,255,0.6);
+  text-decoration: none;
+  font-size: 0.9rem;
+  transition: all 0.2s;
+  border-left: 3px solid transparent;
+}
+
+.sidebarLink:hover {
+  background: rgba(255,255,255,0.05);
+  color: #fff;
+}
+
+.sidebarLink.active {
+  background: rgba(59,130,246,0.1);
+  color: #3b82f6;
+  border-left-color: #3b82f6;
+}
+
+.sidebarLinkIcon {
+  font-size: 1.1rem;
+  flex-shrink: 0;
+}
+
+.sidebarFooter {
+  padding: 1rem 1.5rem;
+  border-top: 1px solid rgba(255,255,255,0.06);
+}
+
+.sidebarBackLink {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: rgba(255,255,255,0.4);
+  text-decoration: none;
+  font-size: 0.85rem;
+  transition: color 0.2s;
+}
+
+.sidebarBackLink:hover {
+  color: rgba(255,255,255,0.8);
+}
+
+.mainContent {
+  margin-left: 260px;
+  flex: 1;
+  min-height: 100vh;
+}
+
+.topbar {
+  background: #1e293b;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+  padding: 1rem 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.topbarTitle {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #fff;
+}
+
+.topbarUser {
+  font-size: 0.85rem;
+  color: rgba(255,255,255,0.5);
+}
+
+.pageContent {
+  padding: 2rem;
+}
+
+/* Dashboard */
+.statsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.statCard {
+  background: #1e293b;
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 16px;
+  padding: 1.5rem;
+}
+
+.statIcon {
+  font-size: 2rem;
+  margin-bottom: 0.75rem;
+}
+
+.statValue {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #fff;
+  line-height: 1;
+}
+
+.statLabel {
+  font-size: 0.85rem;
+  color: rgba(255,255,255,0.5);
+  margin-top: 0.25rem;
+}
+
+/* Tables */
+.section {
+  background: #1e293b;
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 16px;
+  overflow: hidden;
+  margin-bottom: 2rem;
+}
+
+.sectionHeader {
+  padding: 1.25rem 1.5rem;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.sectionTitle {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #fff;
+  margin: 0;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.table th {
+  text-align: left;
+  padding: 0.75rem 1.5rem;
+  font-size: 0.75rem;
+  color: rgba(255,255,255,0.4);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+
+.table td {
+  padding: 1rem 1.5rem;
+  font-size: 0.9rem;
+  color: rgba(255,255,255,0.8);
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+  vertical-align: middle;
+}
+
+.table tr:last-child td {
+  border-bottom: none;
+}
+
+.table tr:hover td {
+  background: rgba(255,255,255,0.02);
+}
+
+/* Buttons */
+.btn {
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+  border: none;
+  transition: all 0.2s;
+}
+
+.btnPrimary {
+  background: #3b82f6;
+  color: #fff;
+}
+
+.btnPrimary:hover {
+  background: #2563eb;
+}
+
+.btnSuccess {
+  background: rgba(34,197,94,0.15);
+  color: #22c55e;
+  border: 1px solid rgba(34,197,94,0.2);
+}
+
+.btnSuccess:hover {
+  background: rgba(34,197,94,0.25);
+}
+
+.btnDanger {
+  background: rgba(239,68,68,0.15);
+  color: #ef4444;
+  border: 1px solid rgba(239,68,68,0.2);
+}
+
+.btnDanger:hover {
+  background: rgba(239,68,68,0.25);
+}
+
+.btnWarning {
+  background: rgba(251,191,36,0.15);
+  color: #fbbf24;
+  border: 1px solid rgba(251,191,36,0.2);
+}
+
+.btnWarning:hover {
+  background: rgba(251,191,36,0.25);
+}
+
+.btnSm {
+  padding: 0.3rem 0.7rem;
+  font-size: 0.8rem;
+}
+
+.actions {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+/* Badges */
+.badge {
+  display: inline-block;
+  padding: 0.2rem 0.6rem;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.badgeAdmin {
+  background: rgba(124,58,237,0.2);
+  color: #a78bfa;
+}
+
+.badgeUser {
+  background: rgba(59,130,246,0.15);
+  color: #60a5fa;
+}
+
+.badgePending {
+  background: rgba(251,191,36,0.15);
+  color: #fbbf24;
+}
+
+.badgeConfirmed {
+  background: rgba(34,197,94,0.15);
+  color: #22c55e;
+}
+
+.badgeCancelled {
+  background: rgba(239,68,68,0.15);
+  color: #ef4444;
+}
+
+.badgeActive {
+  background: rgba(34,197,94,0.15);
+  color: #22c55e;
+}
+
+.badgeInactive {
+  background: rgba(239,68,68,0.15);
+  color: #ef4444;
+}
+
+/* Modal */
+.modalOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 1rem;
+}
+
+.modal {
+  background: #1e293b;
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 20px;
+  padding: 2rem;
+  width: 100%;
+  max-width: 540px;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.modal h2 {
+  color: #fff;
+  margin: 0 0 1.5rem 0;
+  font-size: 1.25rem;
+}
+
+.formGrid {
+  display: grid;
+  gap: 1rem;
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.formGroup label {
+  font-size: 0.85rem;
+  color: rgba(255,255,255,0.6);
+}
+
+.formGroup input,
+.formGroup select,
+.formGroup textarea {
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 8px;
+  color: #fff;
+  padding: 0.6rem 0.9rem;
+  font-size: 0.9rem;
+  transition: border-color 0.2s;
+}
+
+.formGroup input:focus,
+.formGroup select:focus,
+.formGroup textarea:focus {
+  outline: none;
+  border-color: #3b82f6;
+}
+
+.formGroup select option {
+  background: #1e293b;
+}
+
+.formGroup textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+
+.modalActions {
+  display: flex;
+  gap: 0.75rem;
+  margin-top: 1.5rem;
+  justify-content: flex-end;
+}
+
+/* Tour card in admin */
+.tourImage {
+  width: 60px;
+  height: 44px;
+  object-fit: cover;
+  border-radius: 6px;
+}
+
+.emptyState {
+  text-align: center;
+  padding: 3rem;
+  color: rgba(255,255,255,0.4);
+}
+
+.loading {
+  text-align: center;
+  padding: 3rem;
+  color: rgba(255,255,255,0.4);
+}
+
+.searchBar {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.searchInput {
+  flex: 1;
+  background: #1e293b;
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 10px;
+  color: #fff;
+  padding: 0.7rem 1rem;
+  font-size: 0.9rem;
+}
+
+.searchInput::placeholder {
+  color: rgba(255,255,255,0.3);
+}
+
+.searchInput:focus {
+  outline: none;
+  border-color: #3b82f6;
+}
+
+@media (max-width: 768px) {
+  .sidebar {
+    display: none;
+  }
+  .mainContent {
+    margin-left: 0;
+  }
+}

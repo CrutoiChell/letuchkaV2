@@ -1,76 +1,49 @@
-import { User, LoginData, RegisterData } from '../types/user';
+import type { User, LoginData, RegisterData } from '../types/user';
 
-const USERS_KEY = 'travel_app_users';
-const CURRENT_USER_KEY = 'travel_app_current_user';
-
-export const getUsers = (): User[] => {
-  const users = localStorage.getItem(USERS_KEY);
-  return users ? JSON.parse(users) : [];
+export const register = async (data: RegisterData): Promise<User> => {
+  const res = await fetch('/api/auth/register', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data)
+  });
+  const json = await res.json();
+  if (!res.ok) throw new Error(json.message || 'Ошибка регистрации');
+  return json.user;
 };
 
-export const getCurrentUser = (): User | null => {
-  const user = localStorage.getItem(CURRENT_USER_KEY);
-  return user ? JSON.parse(user) : null;
+export const login = async (data: LoginData): Promise<User> => {
+  const res = await fetch('/api/auth/login', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data)
+  });
+  const json = await res.json();
+  if (!res.ok) throw new Error(json.message || 'Ошибка входа');
+  return json.user;
 };
 
-export const register = (data: RegisterData): User | null => {
-  const users = getUsers();
-  
-  if (users.some(user => user.email === data.email)) {
-    throw new Error('Пользователь с таким email уже существует');
+export const logout = async (): Promise<void> => {
+  await fetch('/api/auth/logout', { method: 'POST' });
+};
+
+export const getCurrentUser = async (): Promise<User | null> => {
+  try {
+    const res = await fetch('/api/auth/me');
+    if (!res.ok) return null;
+    const json = await res.json();
+    return json.user ?? null;
+  } catch {
+    return null;
   }
-
-  const newUser: User = {
-    id: Math.random().toString(36).substr(2, 9),
-    email: data.email,
-    name: data.name,
-    phone: data.phone,
-    preferences: {
-      notifications: true,
-      newsletter: true,
-      theme: 'light'
-    },
-    favoriteDestinations: []
-  };
-
-  users.push(newUser);
-  localStorage.setItem(USERS_KEY, JSON.stringify(users));
-  localStorage.setItem(CURRENT_USER_KEY, JSON.stringify(newUser));
-
-  return newUser;
 };
 
-export const login = (data: LoginData): User | null => {
-  const users = getUsers();
-  const user = users.find(u => u.email === data.email);
-
-  if (!user) {
-    throw new Error('Пользователь не найден');
-  }
-
-  localStorage.setItem(CURRENT_USER_KEY, JSON.stringify(user));
-  return user;
+export const updateUser = async (data: Partial<User>): Promise<User> => {
+  const res = await fetch('/api/auth/me', {
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data)
+  });
+  const json = await res.json();
+  if (!res.ok) throw new Error(json.message || 'Ошибка обновления');
+  return json.user;
 };
-
-export const logout = () => {
-  localStorage.removeItem(CURRENT_USER_KEY);
-};
-
-export const updateUser = (userData: Partial<User>): User => {
-  const currentUser = getCurrentUser();
-  if (!currentUser) {
-    throw new Error('Пользователь не авторизован');
-  }
-
-  const users = getUsers();
-  const updatedUser = { ...currentUser, ...userData };
-  
-  const updatedUsers = users.map(user => 
-    user.id === currentUser.id ? updatedUser : user
-  );
-
-  localStorage.setItem(USERS_KEY, JSON.stringify(updatedUsers));
-  localStorage.setItem(CURRENT_USER_KEY, JSON.stringify(updatedUser));
-
-  return updatedUser;
-}; 

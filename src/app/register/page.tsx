@@ -9,32 +9,28 @@ import type { RegisterData } from '../types/user';
 
 export default function Register() {
   const router = useRouter();
-  const [formData, setFormData] = useState<RegisterData>({
-    email: '',
-    password: '',
-    name: '',
-    phone: ''
-  });
+  const [formData, setFormData] = useState<RegisterData>({ email: '', password: '', name: '', phone: '' });
   const [error, setError] = useState<string>('');
+  const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
-
+    setLoading(true);
     try {
       await register(formData);
       router.push('/profile');
+      router.refresh();
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Произошла ошибка при регистрации');
+    } finally {
+      setLoading(false);
     }
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: value
-    }));
+    setFormData(prev => ({ ...prev, [name]: value }));
   };
 
   return (
@@ -42,74 +38,35 @@ export default function Register() {
       <div className={styles.container}>
         <div className={styles.formWrapper}>
           <h1 className={styles.title}>Регистрация</h1>
-          <p className={styles.subtitle}>
-            Создайте аккаунт для доступа ко всем возможностям
-          </p>
+          <p className={styles.subtitle}>Создайте аккаунт для доступа ко всем возможностям</p>
 
           <form onSubmit={handleSubmit} className={styles.form}>
             <div className={styles.inputGroup}>
               <label htmlFor="name">Имя</label>
-              <input
-                id="name"
-                type="text"
-                name="name"
-                value={formData.name}
-                onChange={handleChange}
-                required
-                placeholder="Введите ваше имя"
-              />
+              <input id="name" type="text" name="name" value={formData.name} onChange={handleChange} required placeholder="Введите ваше имя" />
             </div>
-
             <div className={styles.inputGroup}>
               <label htmlFor="email">Email</label>
-              <input
-                id="email"
-                type="email"
-                name="email"
-                value={formData.email}
-                onChange={handleChange}
-                required
-                placeholder="Введите ваш email"
-              />
+              <input id="email" type="email" name="email" value={formData.email} onChange={handleChange} required placeholder="Введите ваш email" />
             </div>
-
             <div className={styles.inputGroup}>
               <label htmlFor="password">Пароль</label>
-              <input
-                id="password"
-                type="password"
-                name="password"
-                value={formData.password}
-                onChange={handleChange}
-                required
-                placeholder="Создайте пароль"
-                minLength={6}
-              />
+              <input id="password" type="password" name="password" value={formData.password} onChange={handleChange} required placeholder="Создайте пароль" minLength={6} />
             </div>
-
             <div className={styles.inputGroup}>
               <label htmlFor="phone">Телефон (необязательно)</label>
-              <input
-                id="phone"
-                type="tel"
-                name="phone"
-                value={formData.phone}
-                onChange={handleChange}
-                placeholder="+7 (___) ___-__-__"
-              />
+              <input id="phone" type="tel" name="phone" value={formData.phone} onChange={handleChange} placeholder="+7 (___) ___-__-__" />
             </div>
 
             {error && <div className={styles.error}>{error}</div>}
 
-            <button type="submit" className={styles.submitButton}>
-              Зарегистрироваться
+            <button type="submit" className={styles.submitButton} disabled={loading}>
+              {loading ? 'Регистрация...' : 'Зарегистрироваться'}
             </button>
 
             <div className={styles.loginLink}>
               Уже есть аккаунт?{' '}
-              <Link href="/login">
-                Войти
-              </Link>
+              <Link href="/login">Войти</Link>
             </div>
           </form>
         </div>
@@ -137,4 +94,4 @@ export default function Register() {
       </div>
     </div>
   );
-} 
+}

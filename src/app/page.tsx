@@ -25,22 +25,30 @@ export default function Home() {
   const router = useRouter();
   const [hoveredDestination, setHoveredDestination] = useState<number | null>(null);
   const [activeTestimonial, setActiveTestimonial] = useState(0);
+  const [contactForm, setContactForm] = useState({ name: '', email: '', destination: '' });
+  const [contactSent, setContactSent] = useState(false);
+  const [contactLoading, setContactLoading] = useState(false);
 
   const scrollToSection = (sectionId: string) => {
     const section = document.getElementById(sectionId);
     if (section) {
-      const offset = 80;
-      const targetPosition = section.offsetTop - offset;
-      
-      window.scrollTo({
-        top: targetPosition,
-        behavior: 'smooth'
-      });
+      window.scrollTo({ top: section.offsetTop - 80, behavior: 'smooth' });
     }
   };
 
   const handleDestinationClick = (destId: number) => {
     router.push(`/tours?category=${destinations[destId - 1].title.toLowerCase()}`);
+  };
+
+  const handleContactSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!contactForm.name || !contactForm.email) return;
+    setContactLoading(true);
+    // Simulate API call
+    await new Promise(r => setTimeout(r, 800));
+    setContactLoading(false);
+    setContactSent(true);
+    setContactForm({ name: '', email: '', destination: '' });
   };
 
   const destinations: Destination[] = [
@@ -49,7 +57,7 @@ export default function Home() {
       title: "Солнечная Греция",
       description: "Откройте для себя древние руины, кристально чистые воды и великолепные пляжи Средиземноморья",
       image: "/greece.jpg",
-      price: "от 89,900 ₽",
+      price: "от 89 900 ₽",
       rating: 4.8
     },
     {
@@ -57,7 +65,7 @@ export default function Home() {
       title: "Магическая Италия",
       description: "Погрузитесь в мир искусства, истории и непревзойденной кухни в сердце Европы",
       image: "/italy.jpg",
-      price: "от 95,500 ₽",
+      price: "от 95 500 ₽",
       rating: 4.9
     },
     {
@@ -65,7 +73,7 @@ export default function Home() {
       title: "Экзотический Таиланд",
       description: "Исследуйте тропические острова, древние храмы и яркую культуру Юго-Восточной Азии",
       image: "/thailand.jpg",
-      price: "от 75,900 ₽",
+      price: "от 75 900 ₽",
       rating: 4.7
     }
   ];
@@ -76,21 +84,21 @@ export default function Home() {
       text: "Таиланд превзошел все ожидания! Спасибо за прекрасно организованный отдых.",
       author: "Елена Смирнова",
       location: "Таиланд",
-      year: "2023"
+      year: "2024"
     },
     {
       id: 2,
       text: "Незабываемое путешествие по Европе! Каждая деталь была продумана до мелочей.",
       author: "Михаил Петров",
       location: "Европа",
-      year: "2023"
+      year: "2024"
     },
     {
       id: 3,
-      text: "Мальдивы - это рай на земле! Благодарим за помощь в организации нашего медового месяца.",
+      text: "Мальдивы — это рай на земле! Благодарим за помощь в организации нашего медового месяца.",
       author: "Анна и Дмитрий",
       location: "Мальдивы",
-      year: "2023"
+      year: "2024"
     }
   ];
 
@@ -99,18 +107,18 @@ export default function Home() {
       <main className={styles.main}>
         <section className={styles.hero}>
           <div className={styles.heroContent}>
-            <h1 className={styles.floating}>Откройте Мир с Нами</h1>
+            <h1>Откройте Мир с Нами</h1>
             <p className={styles.heroText}>Незабываемые путешествия и яркие впечатления ждут вас</p>
             <div className={styles.heroCtas}>
-              <button 
-                onClick={() => scrollToSection('destinations')} 
+              <button
+                onClick={() => scrollToSection('destinations')}
                 className={`${styles.cta} ${styles.ctaPrimary}`}
               >
                 Исследовать направления
                 <span className={styles.ctaArrow}>→</span>
               </button>
-              <button 
-                onClick={() => scrollToSection('contact')} 
+              <button
+                onClick={() => scrollToSection('contact')}
                 className={`${styles.cta} ${styles.ctaSecondary}`}
               >
                 Получить консультацию
@@ -151,7 +159,10 @@ export default function Home() {
                     height={300}
                     style={{
                       transform: hoveredDestination === dest.id ? 'scale(1.1)' : 'scale(1)',
-                      transition: 'transform 0.6s cubic-bezier(0.4, 0, 0.2, 1)'
+                      transition: 'transform 0.6s cubic-bezier(0.4, 0, 0.2, 1)',
+                      width: '100%',
+                      height: '100%',
+                      objectFit: 'cover',
                     }}
                   />
                   <div className={styles.destinationOverlay}>
@@ -165,8 +176,8 @@ export default function Home() {
                 <div className={styles.destinationContent}>
                   <h3>{dest.title}</h3>
                   <p>{dest.description}</p>
-                  <button 
-                    onClick={() => handleDestinationClick(dest.id)} 
+                  <button
+                    onClick={() => handleDestinationClick(dest.id)}
                     className={styles.destinationCta}
                   >
                     Подробнее
@@ -185,17 +196,17 @@ export default function Home() {
           </div>
           <div className={styles.featureGrid}>
             <div className={`${styles.feature} ${styles.featureAnimated}`}>
-              <Image src="/globe.svg" alt="Глобус" width={48} height={48} className={styles.floating} />
+              <Image src="/globe.svg" alt="Глобус" width={48} height={48} />
               <h3>Уникальные маршруты</h3>
               <p>Авторские туры и индивидуальный подход к каждому путешествию</p>
             </div>
-            <div className={`${styles.feature} ${styles.featureAnimated}`}>
-              <Image src="/window.svg" alt="Окно" width={48} height={48} className={styles.floating} />
+            <div className={`${styles.feature} ${styles.featureAnimated}`} style={{ animationDelay: '0.15s' }}>
+              <Image src="/window.svg" alt="Окно" width={48} height={48} />
               <h3>Премиум сервис</h3>
               <p>Лучшие отели, рестораны и частные гиды в каждой стране</p>
             </div>
-            <div className={`${styles.feature} ${styles.featureAnimated}`}>
-              <Image src="/file.svg" alt="Документ" width={48} height={48} className={styles.floating} />
+            <div className={`${styles.feature} ${styles.featureAnimated}`} style={{ animationDelay: '0.3s' }}>
+              <Image src="/file.svg" alt="Документ" width={48} height={48} />
               <h3>Полная поддержка</h3>
               <p>Персональный менеджер 24/7 на связи во время путешествия</p>
             </div>
@@ -208,12 +219,8 @@ export default function Home() {
             {testimonials.map((testimonial, index) => (
               <div
                 key={testimonial.id}
-                className={`${styles.testimonialCard} ${
-                  index === activeTestimonial ? styles.active : ''
-                }`}
-                style={{
-                  display: index === activeTestimonial ? 'block' : 'none'
-                }}
+                className={`${styles.testimonialCard} ${index === activeTestimonial ? styles.active : ''}`}
+                style={{ display: index === activeTestimonial ? 'block' : 'none' }}
               >
                 <p className={styles.testimonialText}>{testimonial.text}</p>
                 <div className={styles.testimonialAuthor}>{testimonial.author}</div>
@@ -226,9 +233,7 @@ export default function Home() {
               {testimonials.map((_, index) => (
                 <button
                   key={index}
-                  className={`${styles.dot} ${
-                    index === activeTestimonial ? styles.active : ''
-                  }`}
+                  className={`${styles.dot} ${index === activeTestimonial ? styles.active : ''}`}
                   onClick={() => setActiveTestimonial(index)}
                   aria-label={`Показать отзыв ${index + 1}`}
                 />
@@ -241,26 +246,57 @@ export default function Home() {
           <div className={styles.contactContent}>
             <h2>Готовы к путешествию?</h2>
             <p>Оставьте заявку, и мы поможем организовать ваш идеальный отдых</p>
-            <form className={styles.contactForm}>
-              <div className={styles.formGroup}>
-                <input type="text" placeholder="Ваше имя" required />
+
+            {contactSent ? (
+              <div className={styles.contactSuccess}>
+                <div className={styles.contactSuccessIcon}>✓</div>
+                <h3>Заявка отправлена!</h3>
+                <p>Наш менеджер свяжется с вами в течение часа</p>
+                <button
+                  className={styles.submitButton}
+                  style={{ marginTop: '1.5rem' }}
+                  onClick={() => setContactSent(false)}
+                >
+                  Отправить ещё
+                </button>
               </div>
-              <div className={styles.formGroup}>
-                <input type="email" placeholder="Ваш email" required />
-              </div>
-              <div className={styles.formGroup}>
-                <select required>
-                  <option value="">Выберите направление</option>
-                  {destinations.map(dest => (
-                    <option key={dest.id} value={dest.id}>{dest.title}</option>
-                  ))}
-                </select>
-              </div>
-              <button type="submit" className={styles.submitButton}>
-                Отправить заявку
-                <span className={styles.buttonSpinner}></span>
-              </button>
-            </form>
+            ) : (
+              <form className={styles.contactForm} onSubmit={handleContactSubmit}>
+                <div className={styles.formGroup}>
+                  <input
+                    type="text"
+                    placeholder="Ваше имя"
+                    required
+                    value={contactForm.name}
+                    onChange={e => setContactForm(f => ({ ...f, name: e.target.value }))}
+                  />
+                </div>
+                <div className={styles.formGroup}>
+                  <input
+                    type="email"
+                    placeholder="Ваш email"
+                    required
+                    value={contactForm.email}
+                    onChange={e => setContactForm(f => ({ ...f, email: e.target.value }))}
+                  />
+                </div>
+                <div className={styles.formGroup}>
+                  <select
+                    value={contactForm.destination}
+                    onChange={e => setContactForm(f => ({ ...f, destination: e.target.value }))}
+                  >
+                    <option value="">Выберите направление</option>
+                    {destinations.map(dest => (
+                      <option key={dest.id} value={dest.title}>{dest.title}</option>
+                    ))}
+                    <option value="other">Другое / не определился</option>
+                  </select>
+                </div>
+                <button type="submit" className={styles.submitButton} disabled={contactLoading}>
+                  {contactLoading ? 'Отправляем...' : 'Отправить заявку'}
+                </button>
+              </form>
+            )}
           </div>
         </section>
       </main>

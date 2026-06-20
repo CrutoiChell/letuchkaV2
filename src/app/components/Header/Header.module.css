@@ -37,13 +37,20 @@
 }
 
 .navLink {
-  color: rgba(255, 255, 255, 0.8);
+  color: rgba(255, 255, 255, 0.7);
   text-decoration: none;
-  transition: color 0.3s ease;
+  transition: color 0.2s ease;
   font-weight: 500;
+  font-size: 0.95rem;
+  padding: 0.4rem 0.6rem;
+  border-radius: 6px;
 }
 
 .navLink:hover {
+  color: #ffffff;
+}
+
+.navLinkActive {
   color: #ffffff;
 }
 
@@ -133,6 +140,30 @@
 
 .menuItem svg {
   font-size: 1.25rem;
+}
+
+.menuItemAdmin {
+  color: #a78bfa;
+}
+
+.menuItemAdmin:hover {
+  background: rgba(124, 58, 237, 0.1);
+}
+
+.menuDivider {
+  height: 1px;
+  background: rgba(255,255,255,0.07);
+  margin: 0.3rem 0.5rem;
+}
+
+.actionButtonPrimary {
+  background: #2563eb;
+  border-color: #2563eb;
+}
+
+.actionButtonPrimary:hover {
+  background: #1d4ed8;
+  border-color: #1d4ed8;
 }
 
 @media (max-width: 768px) {

@@ -9,30 +9,28 @@ import type { LoginData } from '../types/user';
 
 export default function Login() {
   const router = useRouter();
-  const [formData, setFormData] = useState<LoginData>({
-    email: '',
-    password: ''
-  });
+  const [formData, setFormData] = useState<LoginData>({ email: '', password: '' });
   const [error, setError] = useState<string>('');
+  const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
-
+    setLoading(true);
     try {
       await login(formData);
       router.push('/profile');
+      router.refresh();
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Ошибка входа');
+    } finally {
+      setLoading(false);
     }
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: value
-    }));
+    setFormData(prev => ({ ...prev, [name]: value }));
   };
 
   return (
@@ -40,48 +38,27 @@ export default function Login() {
       <div className={styles.container}>
         <div className={styles.formWrapper}>
           <h1 className={styles.title}>Вход в аккаунт</h1>
-          <p className={styles.subtitle}>
-            Войдите, чтобы получить доступ к вашим путешествиям
-          </p>
+          <p className={styles.subtitle}>Войдите, чтобы получить доступ к вашим путешествиям</p>
 
           <form onSubmit={handleSubmit} className={styles.form}>
             <div className={styles.inputGroup}>
               <label htmlFor="email">Email</label>
-              <input
-                id="email"
-                type="email"
-                name="email"
-                value={formData.email}
-                onChange={handleChange}
-                required
-                placeholder="Введите ваш email"
-              />
+              <input id="email" type="email" name="email" value={formData.email} onChange={handleChange} required placeholder="Введите ваш email" />
             </div>
-
             <div className={styles.inputGroup}>
               <label htmlFor="password">Пароль</label>
-              <input
-                id="password"
-                type="password"
-                name="password"
-                value={formData.password}
-                onChange={handleChange}
-                required
-                placeholder="Введите пароль"
-              />
+              <input id="password" type="password" name="password" value={formData.password} onChange={handleChange} required placeholder="Введите пароль" />
             </div>
 
             {error && <div className={styles.error}>{error}</div>}
 
-            <button type="submit" className={styles.submitButton}>
-              Войти
+            <button type="submit" className={styles.submitButton} disabled={loading}>
+              {loading ? 'Вход...' : 'Войти'}
             </button>
 
             <div className={styles.registerLink}>
               Нет аккаунта?{' '}
-              <Link href="/register">
-                Зарегистрироваться
-              </Link>
+              <Link href="/register">Зарегистрироваться</Link>
             </div>
           </form>
         </div>
@@ -109,4 +86,4 @@ export default function Login() {
       </div>
     </div>
   );
-} 
+}
