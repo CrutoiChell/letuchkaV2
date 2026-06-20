@@ -10,6 +10,25 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ message: 'Заполните все обязательные поля' }, { status: 400 });
   }
 
+  const trimmedName = name.trim();
+  if (trimmedName.length < 2 || trimmedName.length > 50) {
+    return NextResponse.json({ message: 'Имя должно содержать от 2 до 50 символов' }, { status: 400 });
+  }
+  if (!/^[a-zA-Zа-яА-ЯёЁ\s-]+$/.test(trimmedName)) {
+    return NextResponse.json({ message: 'Имя должно содержать только буквы' }, { status: 400 });
+  }
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    return NextResponse.json({ message: 'Введите корректный email' }, { status: 400 });
+  }
+  if (password.length < 8 || !/[a-zA-Zа-яА-ЯёЁ]/.test(password) || !/\d/.test(password)) {
+    return NextResponse.json({ message: 'Пароль должен содержать минимум 8 символов, букву и цифру' }, { status: 400 });
+  }
+  if (phone) {
+    const digits = phone.replace(/\D/g, '');
+    const validPhone = (digits.length === 11 && /^[78]/.test(digits)) || digits.length === 10;
+    if (!validPhone) return NextResponse.json({ message: 'Введите корректный номер телефона' }, { status: 400 });
+  }
+
   const { data: existing } = await supabase
     .from('users')
     .select('id')

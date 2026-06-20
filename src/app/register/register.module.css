@@ -86,6 +86,16 @@
   color: rgba(255, 255, 255, 0.5);
 }
 
+.inputError {
+  border-color: #ef4444 !important;
+}
+
+.fieldError {
+  color: #ef4444;
+  font-size: 0.8rem;
+  margin-top: -0.25rem;
+}
+
 .submitButton {
   background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
   color: #ffffff;
@@ -160,8 +170,9 @@
 }
 
 .featureIcon {
-  font-size: 2rem;
   margin-bottom: 1rem;
+  color: #3b82f6;
+  display: flex;
 }
 
 .featureItem h3 {

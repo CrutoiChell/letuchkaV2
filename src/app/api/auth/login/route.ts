@@ -9,6 +9,9 @@ export async function POST(req: NextRequest) {
   if (!email || !password) {
     return NextResponse.json({ message: 'Введите email и пароль' }, { status: 400 });
   }
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    return NextResponse.json({ message: 'Введите корректный email' }, { status: 400 });
+  }
 
   const { data: user } = await supabase
     .from('users')
