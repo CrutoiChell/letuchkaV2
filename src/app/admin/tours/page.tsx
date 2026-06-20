@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import Image from 'next/image';
-import { MdEdit, MdDelete, MdVisibility, MdVisibilityOff, MdStar } from 'react-icons/md';
+import { MdEdit, MdDelete, MdVisibility, MdVisibilityOff, MdStar, MdUpload } from 'react-icons/md';
 import styles from '../admin.module.css';
 import type { Tour } from '../../types/user';
 
@@ -29,6 +29,7 @@ export default function AdminTours() {
   const [editTour, setEditTour] = useState<Tour | null>(null);
   const [form, setForm] = useState(emptyForm);
   const [saving, setSaving] = useState(false);
+  const [uploading, setUploading] = useState(false);
   const [search, setSearch] = useState('');
 
   const load = () => {
@@ -82,6 +83,23 @@ export default function AdminTours() {
     if (!confirm('Удалить тур?')) return;
     await fetch(`/api/tours/${id}`, { method: 'DELETE' });
     load();
+  };
+
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setUploading(true);
+    const data = new FormData();
+    data.append('file', file);
+    const res = await fetch('/api/upload', { method: 'POST', body: data });
+    const json = await res.json();
+    setUploading(false);
+    if (res.ok) {
+      setForm(f => ({ ...f, image: json.url }));
+    } else {
+      alert(json.message || 'Ошибка загрузки');
+    }
+    e.target.value = '';
   };
 
   const handleToggle = async (tour: Tour) => {
@@ -212,8 +230,24 @@ export default function AdminTours() {
                 </div>
               </div>
               <div className={styles.formGroup}>
-                <label>Путь к изображению *</label>
-                <input required value={form.image} onChange={e => setForm(f => ({ ...f, image: e.target.value }))} placeholder="/bali.jpg" />
+                <label>Изображение *</label>
+                <div style={{ display: 'flex', gap: '0.5rem' }}>
+                  <input
+                    required={!form.image}
+                    value={form.image}
+                    onChange={e => setForm(f => ({ ...f, image: e.target.value }))}
+                    placeholder="/bali.jpg или загрузите файл"
+                    style={{ flex: 1 }}
+                  />
+                  <label style={{ cursor: uploading ? 'wait' : 'pointer', display: 'flex', alignItems: 'center', gap: '0.4rem', background: '#334155', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '10px', padding: '0 1rem', color: '#fff', whiteSpace: 'nowrap', fontSize: '0.9rem' }}>
+                    <MdUpload size={16} />
+                    {uploading ? 'Загрузка...' : 'Загрузить'}
+                    <input type="file" accept="image/*" onChange={handleImageUpload} style={{ display: 'none' }} disabled={uploading} />
+                  </label>
+                </div>
+                {form.image && form.image.startsWith('http') && (
+                  <img src={form.image} alt="preview" style={{ marginTop: '0.5rem', height: '80px', borderRadius: '8px', objectFit: 'cover' }} />
+                )}
               </div>
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
                 <div className={styles.formGroup}>

@@ -10,12 +10,125 @@ interface AdminBooking {
   status: 'pending' | 'confirmed' | 'cancelled';
   notes?: string;
   created_at: string;
-  user: { id: string; name: string; email: string; phone?: string; telegram?: string };
+  user: { id: string; name: string; email: string; phone?: string };
   tour: { id: string; title: string; price: string; duration: string };
 }
 
 const statusLabel: Record<string, string> = { pending: 'Ожидает', confirmed: 'Подтверждено', cancelled: 'Отменено' };
 const statusClass: Record<string, string> = { pending: styles.badgePending, confirmed: styles.badgeConfirmed, cancelled: styles.badgeCancelled };
+
+function parseTelegram(notes?: string): string | null {
+  return notes?.match(/Telegram: (@[\w]+)/)?.[1] ?? null;
+}
+
+function ContactModal({ booking, onClose }: { booking: AdminBooking; onClose: () => void }) {
+  const telegram = parseTelegram(booking.notes);
+
+  return (
+    <div className={styles.modalOverlay} onClick={onClose}>
+      <div className={styles.modal} onClick={e => e.stopPropagation()} style={{ maxWidth: '420px' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
+          <h2 style={{ margin: 0 }}>Контакты клиента</h2>
+          <button onClick={onClose} style={{ background: 'none', border: 'none', color: 'rgba(255,255,255,0.5)', cursor: 'pointer' }}>
+            <MdClose size={24} />
+          </button>
+        </div>
+
+        <div style={{ marginBottom: '0.5rem', color: 'rgba(255,255,255,0.5)', fontSize: '0.8rem' }}>Тур</div>
+        <div style={{ color: '#fff', fontWeight: 600, marginBottom: '1.5rem' }}>{booking.tour?.title}</div>
+
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+          <div style={{ background: 'rgba(255,255,255,0.05)', borderRadius: '12px', padding: '1rem' }}>
+            <div style={{ color: 'rgba(255,255,255,0.5)', fontSize: '0.78rem', marginBottom: '0.3rem' }}>Имя</div>
+            <div style={{ color: '#fff', fontWeight: 500 }}>{booking.user?.name}</div>
+          </div>
+
+          <a
+            href={`mailto:${booking.user?.email}`}
+            style={{ background: 'rgba(59,130,246,0.1)', borderRadius: '12px', padding: '1rem', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '0.75rem', border: '1px solid rgba(59,130,246,0.2)' }}
+          >
+            <MdEmail size={20} color="#3b82f6" />
+            <div>
+              <div style={{ color: 'rgba(255,255,255,0.5)', fontSize: '0.78rem' }}>Email</div>
+              <div style={{ color: '#3b82f6', fontWeight: 500 }}>{booking.user?.email}</div>
+            </div>
+          </a>
+
+          {booking.user?.phone ? (
+            <a
+              href={`tel:${booking.user.phone}`}
+              style={{ background: 'rgba(34,197,94,0.1)', borderRadius: '12px', padding: '1rem', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '0.75rem', border: '1px solid rgba(34,197,94,0.2)' }}
+            >
+              <MdPhone size={20} color="#22c55e" />
+              <div>
+                <div style={{ color: 'rgba(255,255,255,0.5)', fontSize: '0.78rem' }}>Телефон</div>
+                <div style={{ color: '#22c55e', fontWeight: 500 }}>{booking.user.phone}</div>
+              </div>
+            </a>
+          ) : (
+            <div style={{ background: 'rgba(255,255,255,0.03)', borderRadius: '12px', padding: '1rem', display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+              <MdPhone size={20} color="rgba(255,255,255,0.2)" />
+              <div style={{ color: 'rgba(255,255,255,0.3)', fontSize: '0.9rem' }}>Телефон не указан</div>
+            </div>
+          )}
+
+          {telegram && (
+            <a
+              href={`https://t.me/${telegram.replace('@', '')}`}
+              target="_blank"
+              rel="noreferrer"
+              style={{ background: 'rgba(0,136,204,0.1)', borderRadius: '12px', padding: '1rem', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '0.75rem', border: '1px solid rgba(0,136,204,0.2)' }}
+            >
+              <FaTelegram size={20} color="#0088cc" />
+              <div>
+                <div style={{ color: 'rgba(255,255,255,0.5)', fontSize: '0.78rem' }}>Telegram</div>
+                <div style={{ color: '#0088cc', fontWeight: 500 }}>{telegram}</div>
+              </div>
+            </a>
+          )}
+
+          {booking.notes && (
+            <div style={{ background: 'rgba(255,255,255,0.05)', borderRadius: '12px', padding: '1rem' }}>
+              <div style={{ color: 'rgba(255,255,255,0.5)', fontSize: '0.78rem', marginBottom: '0.3rem' }}>Детали заказа</div>
+              <div style={{ color: 'rgba(255,255,255,0.8)', fontSize: '0.9rem', whiteSpace: 'pre-line' }}>{booking.notes}</div>
+            </div>
+          )}
+        </div>
+
+        <div style={{ display: 'flex', gap: '0.75rem', marginTop: '1.5rem' }}>
+          {telegram ? (
+            <a
+              href={`https://t.me/${telegram.replace('@', '')}`}
+              target="_blank"
+              rel="noreferrer"
+              className={`${styles.btn} ${styles.btnPrimary}`}
+              style={{ flex: 1, textDecoration: 'none', textAlign: 'center' }}
+            >
+              Написать в Telegram
+            </a>
+          ) : (
+            <a
+              href={`mailto:${booking.user?.email}`}
+              className={`${styles.btn} ${styles.btnPrimary}`}
+              style={{ flex: 1, textDecoration: 'none', textAlign: 'center' }}
+            >
+              Написать на Email
+            </a>
+          )}
+          {booking.user?.phone && (
+            <a
+              href={`tel:${booking.user.phone}`}
+              className={`${styles.btn} ${styles.btnSuccess}`}
+              style={{ flex: 1, textDecoration: 'none', textAlign: 'center' }}
+            >
+              Позвонить
+            </a>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
 
 export default function AdminBookings() {
   const [bookings, setBookings] = useState<AdminBooking[]>([]);
@@ -168,113 +281,7 @@ export default function AdminBookings() {
       </div>
 
       {contactBooking && (
-        <div className={styles.modalOverlay} onClick={() => setContactBooking(null)}>
-          <div className={styles.modal} onClick={e => e.stopPropagation()} style={{ maxWidth: '420px' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
-              <h2 style={{ margin: 0 }}>Контакты клиента</h2>
-              <button
-                onClick={() => setContactBooking(null)}
-                style={{ background: 'none', border: 'none', color: 'rgba(255,255,255,0.5)', cursor: 'pointer' }}
-              >
-                <MdClose size={24} />
-              </button>
-            </div>
-
-            <div style={{ marginBottom: '0.5rem', color: 'rgba(255,255,255,0.5)', fontSize: '0.8rem' }}>Тур</div>
-            <div style={{ color: '#fff', fontWeight: 600, marginBottom: '1.5rem' }}>{contactBooking.tour?.title}</div>
-
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-              <div style={{ background: 'rgba(255,255,255,0.05)', borderRadius: '12px', padding: '1rem' }}>
-                <div style={{ color: 'rgba(255,255,255,0.5)', fontSize: '0.78rem', marginBottom: '0.3rem' }}>Имя</div>
-                <div style={{ color: '#fff', fontWeight: 500 }}>{contactBooking.user?.name}</div>
-              </div>
-
-              <a
-                href={`mailto:${contactBooking.user?.email}`}
-                style={{ background: 'rgba(59,130,246,0.1)', borderRadius: '12px', padding: '1rem', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '0.75rem', border: '1px solid rgba(59,130,246,0.2)' }}
-              >
-                <MdEmail size={20} color="#3b82f6" />
-                <div>
-                  <div style={{ color: 'rgba(255,255,255,0.5)', fontSize: '0.78rem' }}>Email</div>
-                  <div style={{ color: '#3b82f6', fontWeight: 500 }}>{contactBooking.user?.email}</div>
-                </div>
-              </a>
-
-              {contactBooking.user?.phone ? (
-                <a
-                  href={`tel:${contactBooking.user.phone}`}
-                  style={{ background: 'rgba(34,197,94,0.1)', borderRadius: '12px', padding: '1rem', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '0.75rem', border: '1px solid rgba(34,197,94,0.2)' }}
-                >
-                  <MdPhone size={20} color="#22c55e" />
-                  <div>
-                    <div style={{ color: 'rgba(255,255,255,0.5)', fontSize: '0.78rem' }}>Телефон</div>
-                    <div style={{ color: '#22c55e', fontWeight: 500 }}>{contactBooking.user.phone}</div>
-                  </div>
-                </a>
-              ) : (
-                <div style={{ background: 'rgba(255,255,255,0.03)', borderRadius: '12px', padding: '1rem', display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-                  <MdPhone size={20} color="rgba(255,255,255,0.2)" />
-                  <div style={{ color: 'rgba(255,255,255,0.3)', fontSize: '0.9rem' }}>Телефон не указан</div>
-                </div>
-              )}
-
-              {contactBooking.notes && (
-                <div style={{ background: 'rgba(255,255,255,0.05)', borderRadius: '12px', padding: '1rem' }}>
-                  <div style={{ color: 'rgba(255,255,255,0.5)', fontSize: '0.78rem', marginBottom: '0.3rem' }}>Комментарий клиента</div>
-                  <div style={{ color: '#fff' }}>{contactBooking.notes}</div>
-                </div>
-              )}
-            </div>
-
-            {contactBooking.user?.telegram && (
-              <a
-                href={`https://t.me/${contactBooking.user.telegram.replace('@', '')}`}
-                target="_blank"
-                rel="noreferrer"
-                style={{ background: 'rgba(0,136,204,0.1)', borderRadius: '12px', padding: '1rem', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '0.75rem', border: '1px solid rgba(0,136,204,0.2)', marginTop: '1rem' }}
-              >
-                <FaTelegram size={20} color="#0088cc" />
-                <div>
-                  <div style={{ color: 'rgba(255,255,255,0.5)', fontSize: '0.78rem' }}>Telegram</div>
-                  <div style={{ color: '#0088cc', fontWeight: 500 }}>
-                    {contactBooking.user.telegram.startsWith('@') ? contactBooking.user.telegram : `@${contactBooking.user.telegram}`}
-                  </div>
-                </div>
-              </a>
-            )}
-
-            <div style={{ display: 'flex', gap: '0.75rem', marginTop: '1.5rem' }}>
-              {contactBooking.user?.telegram ? (
-                <a
-                  href={`https://t.me/${contactBooking.user.telegram.replace('@', '')}`}
-                  target="_blank"
-                  rel="noreferrer"
-                  className={`${styles.btn} ${styles.btnPrimary}`}
-                  style={{ flex: 1, textDecoration: 'none', textAlign: 'center' }}
-                >
-                  Написать в Telegram
-                </a>
-              ) : (
-                <a
-                  href={`mailto:${contactBooking.user?.email}`}
-                  className={`${styles.btn} ${styles.btnPrimary}`}
-                  style={{ flex: 1, textDecoration: 'none', textAlign: 'center' }}
-                >
-                  Написать на Email
-                </a>
-              )}
-              {contactBooking.user?.phone && (
-                <a
-                  href={`tel:${contactBooking.user.phone}`}
-                  className={`${styles.btn} ${styles.btnSuccess}`}
-                  style={{ flex: 1, textDecoration: 'none', textAlign: 'center' }}
-                >
-                  Позвонить
-                </a>
-              )}
-            </div>
-          </div>
-        </div>
+        <ContactModal booking={contactBooking} onClose={() => setContactBooking(null)} />
       )}
     </div>
   );

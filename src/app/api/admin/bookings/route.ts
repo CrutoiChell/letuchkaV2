@@ -8,7 +8,7 @@ export async function GET() {
 
   const { data: bookings, error } = await supabase
     .from('bookings')
-    .select('*, user:users(id, name, email, phone, telegram), tour:tours(id, title, price, duration)')
+    .select('*, user:users(id, name, email, phone), tour:tours(id, title, price, duration)')
     .order('created_at', { ascending: false });
 
   if (error) return NextResponse.json({ message: 'Ошибка загрузки бронирований' }, { status: 500 });
