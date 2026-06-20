@@ -14,14 +14,14 @@ export default function Profile() {
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [isEditing, setIsEditing] = useState(false);
   const [loading, setLoading] = useState(true);
-  const [formData, setFormData] = useState({ name: '', email: '', phone: '' });
+  const [formData, setFormData] = useState({ name: '', email: '', phone: '', telegram: '' });
 
   useEffect(() => {
     const init = async () => {
       const currentUser = await getCurrentUser();
       if (!currentUser) { router.push('/login'); return; }
       setUser(currentUser);
-      setFormData({ name: currentUser.name, email: currentUser.email, phone: currentUser.phone || '' });
+      setFormData({ name: currentUser.name, email: currentUser.email, phone: currentUser.phone || '', telegram: currentUser.telegram || '' });
 
       const res = await fetch('/api/bookings');
       if (res.ok) {
@@ -43,7 +43,7 @@ export default function Profile() {
     e.preventDefault();
     if (!user) return;
     try {
-      const updated = await updateUser({ name: formData.name, phone: formData.phone });
+      const updated = await updateUser({ name: formData.name, phone: formData.phone, telegram: formData.telegram || undefined });
       setUser(updated);
       setIsEditing(false);
     } catch (error) {
@@ -129,6 +129,10 @@ export default function Profile() {
                   <label htmlFor="phone">Телефон</label>
                   <input id="phone" type="tel" name="phone" value={formData.phone} onChange={handleChange} />
                 </div>
+                <div className={styles.inputGroup}>
+                  <label htmlFor="telegram">Telegram</label>
+                  <input id="telegram" type="text" name="telegram" value={formData.telegram} onChange={handleChange} placeholder="@username" />
+                </div>
                 <button type="submit" className={styles.saveButton}>Сохранить изменения</button>
               </form>
             ) : (
@@ -136,6 +140,13 @@ export default function Profile() {
                 <div className={styles.infoItem}><span className={styles.label}>Имя:</span><span>{user.name}</span></div>
                 <div className={styles.infoItem}><span className={styles.label}>Email:</span><span>{user.email}</span></div>
                 <div className={styles.infoItem}><span className={styles.label}>Телефон:</span><span>{user.phone || 'Не указан'}</span></div>
+                <div className={styles.infoItem}>
+                  <span className={styles.label}>Telegram:</span>
+                  {user.telegram
+                    ? <a href={`https://t.me/${user.telegram.replace('@', '')}`} target="_blank" rel="noreferrer" style={{ color: '#3b82f6' }}>{user.telegram.startsWith('@') ? user.telegram : `@${user.telegram}`}</a>
+                    : <span>Не указан</span>
+                  }
+                </div>
               </div>
             )}
           </section>

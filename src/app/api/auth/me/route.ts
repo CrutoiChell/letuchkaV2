@@ -6,6 +6,7 @@ export async function GET() {
   const user = await getAuthUser();
   if (!user) return NextResponse.json({ message: 'Не авторизован' }, { status: 401 });
   return NextResponse.json({ user });
+
 }
 
 export async function PATCH(req: NextRequest) {
@@ -25,7 +26,7 @@ export async function PATCH(req: NextRequest) {
     body.name = name;
   }
 
-  const allowed = ['name', 'phone', 'avatar', 'notifications', 'newsletter'];
+  const allowed = ['name', 'phone', 'telegram', 'avatar', 'notifications', 'newsletter'];
   const updates: Record<string, unknown> = { updated_at: new Date().toISOString() };
   for (const key of allowed) {
     if (key in body) updates[key] = body[key];
@@ -35,7 +36,7 @@ export async function PATCH(req: NextRequest) {
     .from('users')
     .update(updates)
     .eq('id', user.id)
-    .select('id, email, name, phone, role, avatar, notifications, newsletter')
+    .select('id, email, name, phone, telegram, role, avatar, notifications, newsletter')
     .single();
 
   if (error) return NextResponse.json({ message: 'Ошибка обновления профиля' }, { status: 500 });

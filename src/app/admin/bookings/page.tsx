@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { MdCheckCircle, MdCancel, MdDelete, MdContactPhone, MdPhone, MdEmail, MdClose, MdHourglassEmpty } from 'react-icons/md';
+import { FaTelegram } from 'react-icons/fa';
 import styles from '../admin.module.css';
 
 interface AdminBooking {
@@ -9,7 +10,7 @@ interface AdminBooking {
   status: 'pending' | 'confirmed' | 'cancelled';
   notes?: string;
   created_at: string;
-  user: { id: string; name: string; email: string; phone?: string };
+  user: { id: string; name: string; email: string; phone?: string; telegram?: string };
   tour: { id: string; title: string; price: string; duration: string };
 }
 
@@ -225,14 +226,43 @@ export default function AdminBookings() {
               )}
             </div>
 
-            <div style={{ display: 'flex', gap: '0.75rem', marginTop: '1.5rem' }}>
+            {contactBooking.user?.telegram && (
               <a
-                href={`mailto:${contactBooking.user?.email}`}
-                className={`${styles.btn} ${styles.btnPrimary}`}
-                style={{ flex: 1, textDecoration: 'none', textAlign: 'center' }}
+                href={`https://t.me/${contactBooking.user.telegram.replace('@', '')}`}
+                target="_blank"
+                rel="noreferrer"
+                style={{ background: 'rgba(0,136,204,0.1)', borderRadius: '12px', padding: '1rem', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '0.75rem', border: '1px solid rgba(0,136,204,0.2)', marginTop: '1rem' }}
               >
-                Написать
+                <FaTelegram size={20} color="#0088cc" />
+                <div>
+                  <div style={{ color: 'rgba(255,255,255,0.5)', fontSize: '0.78rem' }}>Telegram</div>
+                  <div style={{ color: '#0088cc', fontWeight: 500 }}>
+                    {contactBooking.user.telegram.startsWith('@') ? contactBooking.user.telegram : `@${contactBooking.user.telegram}`}
+                  </div>
+                </div>
               </a>
+            )}
+
+            <div style={{ display: 'flex', gap: '0.75rem', marginTop: '1.5rem' }}>
+              {contactBooking.user?.telegram ? (
+                <a
+                  href={`https://t.me/${contactBooking.user.telegram.replace('@', '')}`}
+                  target="_blank"
+                  rel="noreferrer"
+                  className={`${styles.btn} ${styles.btnPrimary}`}
+                  style={{ flex: 1, textDecoration: 'none', textAlign: 'center' }}
+                >
+                  Написать в Telegram
+                </a>
+              ) : (
+                <a
+                  href={`mailto:${contactBooking.user?.email}`}
+                  className={`${styles.btn} ${styles.btnPrimary}`}
+                  style={{ flex: 1, textDecoration: 'none', textAlign: 'center' }}
+                >
+                  Написать на Email
+                </a>
+              )}
               {contactBooking.user?.phone && (
                 <a
                   href={`tel:${contactBooking.user.phone}`}

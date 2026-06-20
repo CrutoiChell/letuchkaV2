@@ -18,6 +18,7 @@ export interface User {
   email: string;
   name: string;
   phone?: string;
+  telegram?: string;
   avatar?: string;
   role?: 'user' | 'admin';
   notifications?: boolean;
@@ -39,7 +40,7 @@ export interface Booking {
   notes?: string;
   created_at: string;
   tour?: Tour;
-  user?: { id: string; name: string; email: string };
+  user?: { id: string; name: string; email: string; phone?: string; telegram?: string };
 }
 
 export interface AuthState {

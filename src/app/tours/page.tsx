@@ -67,14 +67,16 @@ function formatPrice(n: number): string {
 
 // ──── Booking Modal ────
 
-function BookingModal({ tour, onClose, onConfirm }: {
+function BookingModal({ tour, onClose, onConfirm, userTelegram }: {
   tour: Tour;
   onClose: () => void;
-  onConfirm: (data: { month: string; travelers: number; notes: string }) => Promise<void>;
+  onConfirm: (data: { month: string; travelers: number; notes: string; telegram: string }) => Promise<void>;
+  userTelegram?: string;
 }) {
   const [selectedMonth, setSelectedMonth] = useState(MONTHS[1].value);
   const [travelers, setTravelers] = useState(1);
   const [notes, setNotes] = useState('');
+  const [telegram, setTelegram] = useState(userTelegram || '');
   const [loading, setLoading] = useState(false);
   const [confirmed, setConfirmed] = useState(false);
 
@@ -89,7 +91,7 @@ function BookingModal({ tour, onClose, onConfirm }: {
 
   const handleConfirm = async () => {
     setLoading(true);
-    await onConfirm({ month: selectedMonth, travelers, notes });
+    await onConfirm({ month: selectedMonth, travelers, notes, telegram });
     setLoading(false);
     setConfirmed(true);
   };
@@ -203,6 +205,19 @@ function BookingModal({ tour, onClose, onConfirm }: {
             </div>
           </div>
 
+          {/* Telegram */}
+          <div className={styles.bookingSection}>
+            <h3 className={styles.bookingSectionTitle}>✈ Telegram для связи</h3>
+            <input
+              type="text"
+              className={styles.bookingNotes}
+              style={{ padding: '0.75rem 1rem', borderRadius: '10px', height: 'auto' }}
+              placeholder="@username"
+              value={telegram}
+              onChange={e => setTelegram(e.target.value)}
+            />
+          </div>
+
           {/* Notes */}
           <div className={styles.bookingSection}>
             <h3 className={styles.bookingSectionTitle}>💬 Пожелания</h3>
@@ -260,6 +275,7 @@ function ToursContent() {
   const [tours, setTours] = useState<Tour[]>([]);
   const [loading, setLoading] = useState(true);
   const [bookingTour, setBookingTour] = useState<Tour | null>(null);
+  const [currentUserTelegram, setCurrentUserTelegram] = useState<string | undefined>();
 
   useEffect(() => {
     const category = searchParams.get('category');
@@ -285,15 +301,18 @@ function ToursContent() {
   const handleBookingClick = async (tour: Tour) => {
     const res = await fetch('/api/auth/me');
     if (!res.ok) { router.push('/login'); return; }
+    const data = await res.json();
+    setCurrentUserTelegram(data.user?.telegram || undefined);
     setBookingTour(tour);
   };
 
-  const handleConfirmBooking = async ({ month, travelers, notes }: { month: string; travelers: number; notes: string }) => {
+  const handleConfirmBooking = async ({ month, travelers, notes, telegram }: { month: string; travelers: number; notes: string; telegram: string }) => {
     if (!bookingTour) return;
     const formattedMonth = new Date(month + '-01').toLocaleString('ru-RU', { month: 'long', year: 'numeric' });
     const notesText = [
       `Месяц отъезда: ${formattedMonth}`,
       `Туристов: ${travelers}`,
+      telegram ? `Telegram: ${telegram.startsWith('@') ? telegram : '@' + telegram}` : '',
       notes ? `Пожелания: ${notes}` : ''
     ].filter(Boolean).join('\n');
 
@@ -391,6 +410,7 @@ function ToursContent() {
             tour={bookingTour}
             onClose={handleModalClose}
             onConfirm={handleConfirmBooking}
+            userTelegram={currentUserTelegram}
           />
         )}
 
