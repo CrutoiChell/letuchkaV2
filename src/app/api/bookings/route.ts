@@ -24,8 +24,8 @@ export async function POST(req: NextRequest) {
   const { tourId, notes } = await req.json();
   if (!tourId) return NextResponse.json({ message: 'Укажите тур' }, { status: 400 });
 
-  const { data: tour } = await supabase.from('tours').select('id').eq('id', tourId).single();
-  if (!tour) return NextResponse.json({ message: 'Тур не найден' }, { status: 404 });
+  const { data: tour } = await supabase.from('tours').select('id').eq('id', tourId).eq('is_active', true).single();
+  if (!tour) return NextResponse.json({ message: 'Тур не найден или недоступен' }, { status: 404 });
 
   const { data: booking, error } = await supabase
     .from('bookings')

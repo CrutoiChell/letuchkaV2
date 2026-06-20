@@ -13,9 +13,15 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
     return NextResponse.json({ message: 'Нельзя снять права администратора с себя' }, { status: 400 });
   }
 
+  const allowed = ['role', 'name', 'phone'] as const;
+  const updates: Record<string, unknown> = { updated_at: new Date().toISOString() };
+  for (const key of allowed) {
+    if (key in body) updates[key] = body[key];
+  }
+
   const { data: user, error } = await supabase
     .from('users')
-    .update({ ...body, updated_at: new Date().toISOString() })
+    .update(updates)
     .eq('id', id)
     .select('id, email, name, phone, role, created_at')
     .single();
