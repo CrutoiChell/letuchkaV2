@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import Image from 'next/image';
+import { MdEdit, MdDelete, MdVisibility, MdVisibilityOff, MdStar } from 'react-icons/md';
 import styles from '../admin.module.css';
 import type { Tour } from '../../types/user';
 
@@ -155,7 +156,9 @@ export default function AdminTours() {
                   <td><span className={`${styles.badge} ${styles.badgeUser}`}>{catLabel[tour.category]}</span></td>
                   <td>{tour.price}</td>
                   <td>{tour.duration}</td>
-                  <td>⭐ {tour.rating}</td>
+                  <td style={{ display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
+                    <MdStar size={16} color="#f59e0b" /> {tour.rating}
+                  </td>
                   <td>
                     <span className={`${styles.badge} ${tour.is_active ? styles.badgeActive : styles.badgeInactive}`}>
                       {tour.is_active ? 'Активен' : 'Скрыт'}
@@ -163,11 +166,19 @@ export default function AdminTours() {
                   </td>
                   <td>
                     <div className={styles.actions}>
-                      <button className={`${styles.btn} ${styles.btnWarning} ${styles.btnSm}`} onClick={() => openEdit(tour)}>✏️</button>
-                      <button className={`${styles.btn} ${tour.is_active ? styles.btnDanger : styles.btnSuccess} ${styles.btnSm}`} onClick={() => handleToggle(tour)}>
-                        {tour.is_active ? '🙈' : '👁️'}
+                      <button className={`${styles.btn} ${styles.btnWarning} ${styles.btnSm}`} onClick={() => openEdit(tour)} title="Редактировать">
+                        <MdEdit size={16} />
                       </button>
-                      <button className={`${styles.btn} ${styles.btnDanger} ${styles.btnSm}`} onClick={() => handleDelete(tour.id)}>🗑️</button>
+                      <button
+                        className={`${styles.btn} ${tour.is_active ? styles.btnDanger : styles.btnSuccess} ${styles.btnSm}`}
+                        onClick={() => handleToggle(tour)}
+                        title={tour.is_active ? 'Скрыть' : 'Показать'}
+                      >
+                        {tour.is_active ? <MdVisibilityOff size={16} /> : <MdVisibility size={16} />}
+                      </button>
+                      <button className={`${styles.btn} ${styles.btnDanger} ${styles.btnSm}`} onClick={() => handleDelete(tour.id)} title="Удалить">
+                        <MdDelete size={16} />
+                      </button>
                     </div>
                   </td>
                 </tr>

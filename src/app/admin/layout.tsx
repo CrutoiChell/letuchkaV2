@@ -3,14 +3,15 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useRouter, usePathname } from 'next/navigation';
+import { MdDashboard, MdFlight, MdPeople, MdAssignment } from 'react-icons/md';
 import styles from './admin.module.css';
 import type { User } from '../types/user';
 
 const navItems = [
-  { href: '/admin', label: 'Дашборд', icon: '📊' },
-  { href: '/admin/tours', label: 'Туры', icon: '✈️' },
-  { href: '/admin/users', label: 'Пользователи', icon: '👥' },
-  { href: '/admin/bookings', label: 'Бронирования', icon: '📋' },
+  { href: '/admin', label: 'Дашборд', icon: <MdDashboard size={20} /> },
+  { href: '/admin/tours', label: 'Туры', icon: <MdFlight size={20} /> },
+  { href: '/admin/users', label: 'Пользователи', icon: <MdPeople size={20} /> },
+  { href: '/admin/bookings', label: 'Бронирования', icon: <MdAssignment size={20} /> },
 ];
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {

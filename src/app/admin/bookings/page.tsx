@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react';
+import { MdCheckCircle, MdCancel, MdDelete, MdContactPhone, MdPhone, MdEmail, MdClose, MdHourglassEmpty } from 'react-icons/md';
 import styles from '../admin.module.css';
 
 interface AdminBooking {
@@ -8,7 +9,7 @@ interface AdminBooking {
   status: 'pending' | 'confirmed' | 'cancelled';
   notes?: string;
   created_at: string;
-  user: { id: string; name: string; email: string };
+  user: { id: string; name: string; email: string; phone?: string };
   tour: { id: string; title: string; price: string; duration: string };
 }
 
@@ -20,6 +21,7 @@ export default function AdminBookings() {
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
   const [filterStatus, setFilterStatus] = useState('all');
+  const [contactBooking, setContactBooking] = useState<AdminBooking | null>(null);
 
   const load = () => {
     setLoading(true);
@@ -113,33 +115,48 @@ export default function AdminBookings() {
                   </td>
                   <td>
                     <div className={styles.actions}>
+                      <button
+                        className={`${styles.btn} ${styles.btnPrimary} ${styles.btnSm}`}
+                        onClick={() => setContactBooking(b)}
+                        title="Контакты клиента"
+                      >
+                        <MdContactPhone size={16} />
+                      </button>
                       {b.status !== 'confirmed' && (
                         <button
                           className={`${styles.btn} ${styles.btnSuccess} ${styles.btnSm}`}
                           onClick={() => handleStatus(b, 'confirmed')}
                           title="Подтвердить"
-                        >✅</button>
+                        >
+                          <MdCheckCircle size={16} />
+                        </button>
                       )}
                       {b.status !== 'cancelled' && (
                         <button
                           className={`${styles.btn} ${styles.btnWarning} ${styles.btnSm}`}
                           onClick={() => handleStatus(b, 'cancelled')}
                           title="Отменить"
-                        >❌</button>
+                        >
+                          <MdCancel size={16} />
+                        </button>
                       )}
                       {b.status === 'pending' && (
                         <button
                           className={`${styles.btn} ${styles.btnDanger} ${styles.btnSm}`}
-                          onClick={() => handleStatus(b, 'pending')}
-                          style={{ opacity: 0.5, cursor: 'default' }}
+                          style={{ opacity: 0.4, cursor: 'default' }}
                           title="Ожидает"
-                        >⏳</button>
+                          disabled
+                        >
+                          <MdHourglassEmpty size={16} />
+                        </button>
                       )}
                       <button
                         className={`${styles.btn} ${styles.btnDanger} ${styles.btnSm}`}
                         onClick={() => handleDelete(b.id)}
                         title="Удалить"
-                      >🗑️</button>
+                      >
+                        <MdDelete size={16} />
+                      </button>
                     </div>
                   </td>
                 </tr>
@@ -148,6 +165,87 @@ export default function AdminBookings() {
           </table>
         )}
       </div>
+
+      {contactBooking && (
+        <div className={styles.modalOverlay} onClick={() => setContactBooking(null)}>
+          <div className={styles.modal} onClick={e => e.stopPropagation()} style={{ maxWidth: '420px' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
+              <h2 style={{ margin: 0 }}>Контакты клиента</h2>
+              <button
+                onClick={() => setContactBooking(null)}
+                style={{ background: 'none', border: 'none', color: 'rgba(255,255,255,0.5)', cursor: 'pointer' }}
+              >
+                <MdClose size={24} />
+              </button>
+            </div>
+
+            <div style={{ marginBottom: '0.5rem', color: 'rgba(255,255,255,0.5)', fontSize: '0.8rem' }}>Тур</div>
+            <div style={{ color: '#fff', fontWeight: 600, marginBottom: '1.5rem' }}>{contactBooking.tour?.title}</div>
+
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+              <div style={{ background: 'rgba(255,255,255,0.05)', borderRadius: '12px', padding: '1rem' }}>
+                <div style={{ color: 'rgba(255,255,255,0.5)', fontSize: '0.78rem', marginBottom: '0.3rem' }}>Имя</div>
+                <div style={{ color: '#fff', fontWeight: 500 }}>{contactBooking.user?.name}</div>
+              </div>
+
+              <a
+                href={`mailto:${contactBooking.user?.email}`}
+                style={{ background: 'rgba(59,130,246,0.1)', borderRadius: '12px', padding: '1rem', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '0.75rem', border: '1px solid rgba(59,130,246,0.2)' }}
+              >
+                <MdEmail size={20} color="#3b82f6" />
+                <div>
+                  <div style={{ color: 'rgba(255,255,255,0.5)', fontSize: '0.78rem' }}>Email</div>
+                  <div style={{ color: '#3b82f6', fontWeight: 500 }}>{contactBooking.user?.email}</div>
+                </div>
+              </a>
+
+              {contactBooking.user?.phone ? (
+                <a
+                  href={`tel:${contactBooking.user.phone}`}
+                  style={{ background: 'rgba(34,197,94,0.1)', borderRadius: '12px', padding: '1rem', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '0.75rem', border: '1px solid rgba(34,197,94,0.2)' }}
+                >
+                  <MdPhone size={20} color="#22c55e" />
+                  <div>
+                    <div style={{ color: 'rgba(255,255,255,0.5)', fontSize: '0.78rem' }}>Телефон</div>
+                    <div style={{ color: '#22c55e', fontWeight: 500 }}>{contactBooking.user.phone}</div>
+                  </div>
+                </a>
+              ) : (
+                <div style={{ background: 'rgba(255,255,255,0.03)', borderRadius: '12px', padding: '1rem', display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                  <MdPhone size={20} color="rgba(255,255,255,0.2)" />
+                  <div style={{ color: 'rgba(255,255,255,0.3)', fontSize: '0.9rem' }}>Телефон не указан</div>
+                </div>
+              )}
+
+              {contactBooking.notes && (
+                <div style={{ background: 'rgba(255,255,255,0.05)', borderRadius: '12px', padding: '1rem' }}>
+                  <div style={{ color: 'rgba(255,255,255,0.5)', fontSize: '0.78rem', marginBottom: '0.3rem' }}>Комментарий клиента</div>
+                  <div style={{ color: '#fff' }}>{contactBooking.notes}</div>
+                </div>
+              )}
+            </div>
+
+            <div style={{ display: 'flex', gap: '0.75rem', marginTop: '1.5rem' }}>
+              <a
+                href={`mailto:${contactBooking.user?.email}`}
+                className={`${styles.btn} ${styles.btnPrimary}`}
+                style={{ flex: 1, textDecoration: 'none', textAlign: 'center' }}
+              >
+                Написать
+              </a>
+              {contactBooking.user?.phone && (
+                <a
+                  href={`tel:${contactBooking.user.phone}`}
+                  className={`${styles.btn} ${styles.btnSuccess}`}
+                  style={{ flex: 1, textDecoration: 'none', textAlign: 'center' }}
+                >
+                  Позвонить
+                </a>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react';
+import { MdPerson, MdAdminPanelSettings, MdDelete } from 'react-icons/md';
 import styles from '../admin.module.css';
 
 interface AdminUser {
@@ -97,13 +98,14 @@ export default function AdminUsers() {
                         onClick={() => handleRoleToggle(user)}
                         title={user.role === 'admin' ? 'Снять права' : 'Сделать админом'}
                       >
-                        {user.role === 'admin' ? '👤' : '🛡️'}
+                        {user.role === 'admin' ? <MdPerson size={16} /> : <MdAdminPanelSettings size={16} />}
                       </button>
                       <button
                         className={`${styles.btn} ${styles.btnDanger} ${styles.btnSm}`}
                         onClick={() => handleDelete(user)}
+                        title="Удалить"
                       >
-                        🗑️
+                        <MdDelete size={16} />
                       </button>
                     </div>
                   </td>
