@@ -17,7 +17,7 @@ interface TeamMember {
 }
 
 const stats: Stat[] = [
-  { number: '10+', label: 'Лет опыта' },
+  { number: '11+', label: 'Лет опыта' },
   { number: '50+', label: 'Направлений' },
   { number: '10k+', label: 'Довольных клиентов' },
   { number: '98%', label: 'Положительных отзывов' },
@@ -28,7 +28,7 @@ const teamMembers: TeamMember[] = [
     name: 'Баель',
     position: 'Генеральный директор',
     image: '/director.jpg',
-    description: 'Более 15 лет опыта в туристической индустрии. Создала компанию с нуля и развила ее до лидирующих позиций на рынке.'
+    description: 'Более 16 лет опыта в туристической индустрии. Создала компанию с нуля и развила ее до лидирующих позиций на рынке.'
   },
   {
     name: 'Алексей',
@@ -83,7 +83,7 @@ export default function About() {
           <div className={styles.heroContent}>
             <h1 className={styles.title}>О нашей компании</h1>
             <p className={styles.subtitle}>
-              Мы создаем незабываемые путешествия и яркие впечатления уже более 10 лет
+              Мы создаем незабываемые путешествия и яркие впечатления уже более 11 лет
             </p>
           </div>
         </section>

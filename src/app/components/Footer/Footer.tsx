@@ -55,7 +55,7 @@ export default function Footer() {
         </div>
         
         <div className={styles.bottom}>
-          <p>© 2025 Туристическое агентство. Все права защищены.</p>
+          <p>© 2026 Летучка. Все права защищены.</p>
         </div>
       </div>
     </footer>
